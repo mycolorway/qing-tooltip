@@ -1,0 +1,27 @@
+{
+  "name": "qing-tooltip",
+  "version": "0.0.1",
+  "description": "QingTooltip",
+  "homepage": "http://mycolorway.github.io/qing-tooltip",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mycolorway/qing-tooltip.git"
+  },
+  "author": "farthinker <farthinker@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mycolorway/qing-tooltip/issues"
+  },
+  "main": "dist/qing-tooltip.js",
+  "scripts": {
+    "start": "gulp",
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "qing-module": "~1.0.0"
+  },
+  "devDependencies": {
+    "qing-build": "^0.x"
+  }
+}
