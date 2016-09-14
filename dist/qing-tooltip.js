@@ -99,7 +99,6 @@ QingTooltip = (function(superClass) {
 
   QingTooltip.prototype._adjustPosition = function(original) {
     var height, width;
-    console.log(original);
     width = this.el.outerWidth();
     height = this.el.outerHeight();
     switch (this._normalizePositioin()) {
