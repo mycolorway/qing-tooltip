@@ -12,14 +12,67 @@
 	<script type="text/javascript" src="dist/qing-tooltip.js"></script>
 	<script type="text/javascript">
 		$(function() {
-      var qingTooltip = new QingTooltip({
-        el: '.test-el'
-      });
+      $('.test-el-1').each(function(){
+        var qingTooltip1 = new QingTooltip({
+          el: this,
+          content: 'This is a tooltip',
+          position: 'right'
+        });
+      })
+
+      $('.test-el-2').each(function(){
+        var qingTooltip2 = new QingTooltip({
+          el: this,
+          content: 'This is a tooltip',
+          position: 'left'
+        });
+      })
+
+      $('.test-el-3').each(function(){
+        var qingTooltip3 = new QingTooltip({
+          el: this,
+          content: 'This is a tooltip',
+          position: 'top'
+        });
+      })
+
+      $('.test-el-4').each(function(){
+        var qingTooltip4 = new QingTooltip({
+          el: this,
+          content: 'This is a tooltip',
+          position: 'bottom'
+        });
+      })
+
 		});
 	</script>
 
 </head>
 <body>
-  <div class="test-el"></div>
+  <style>
+    body{
+      text-align: center;
+    }
+    .test-el{
+      display: inline-block;
+      margin: 5%;
+    }
+    .wrapper{
+      position: relative;
+      left: 10px;
+      top: 10px;
+    }
+  </style>
+  <div class="test-el test-el-1">Hover on me, see right</div>
+  <div class="test-el test-el-2">Hover on me, see left</div>
+  <div class="test-el test-el-3">Hover on me, see top</div>
+  <div class="test-el test-el-4">Hover on me, see bottom</div>
+
+  <div class="wrapper">
+    <div class="test-el test-el-1">Hover on me, see right</div>
+    <div class="test-el test-el-2">Hover on me, see left</div>
+    <div class="test-el test-el-3">Hover on me, see top</div>
+    <div class="test-el test-el-4">Hover on me, see bottom</div>
+  </div>
 </body>
 </html>
