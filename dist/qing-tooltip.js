@@ -55,6 +55,9 @@ QingTooltip = (function(superClass) {
       return this.el.data('qingTooltip');
     }
     this.opts = $.extend({}, QingTooltip.opts, this.opts);
+    if ($.inArray(this.opts.position, ['top', 'bottom', 'left', 'right']) < 0) {
+      this.opts.position = 'bottom';
+    }
     this._render();
     this._bind();
     this.el.data('qingTooltip', this);
@@ -63,7 +66,8 @@ QingTooltip = (function(superClass) {
 
   QingTooltip.prototype._render = function() {
     this.tooltip = $(this.opts.tpl);
-    return this.tooltip.html(this.opts.content);
+    this.tooltip.html(this.opts.content);
+    return this.tooltip.addClass(this.opts.position);
   };
 
   QingTooltip.prototype._bind = function() {
@@ -80,53 +84,39 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._setPosition = function() {
-    var position;
+    var height, position, targetPosition, tooltipPosition, width;
     position = this.el.position();
-    this._addClass();
-    return this.tooltip.css(this._adjustPosition({
-      top: (position.top || 0) + parseInt(this.el.css('margin-top')),
-      left: (position.left || 0) + parseInt(this.el.css('margin-left'))
-    }));
-  };
-
-  QingTooltip.prototype._normalizePositioin = function() {
-    if (includes(['top', 'bottom', 'left', 'right'], this.opts.position)) {
-      return this.opts.position;
-    } else {
-      return 'bottom';
-    }
-  };
-
-  QingTooltip.prototype._adjustPosition = function(original) {
-    var height, width;
     width = this.el.outerWidth();
     height = this.el.outerHeight();
-    switch (this._normalizePositioin()) {
-      case 'top':
-        return {
-          top: original.top - this.tooltip.outerHeight(),
-          left: original.left + width / 2
-        };
-      case 'bottom':
-        return {
-          top: original.top + this.el.outerHeight(),
-          left: original.left + width / 2
-        };
-      case 'left':
-        return {
-          top: original.top + height / 2,
-          left: original.left - this.tooltip.outerWidth()
-        };
-      case 'right':
-        return {
-          top: original.top + height / 2,
-          left: original.left + this.el.outerWidth()
-        };
-    }
-  };
-
-  QingTooltip.prototype._addClass = function() {
-    return this.tooltip.addClass(this._normalizePositioin());
+    targetPosition = {
+      top: (position.top || 0) + parseInt(this.el.css('margin-top')),
+      left: (position.left || 0) + parseInt(this.el.css('margin-left'))
+    };
+    tooltipPosition = (function() {
+      switch (this.opts.position) {
+        case 'top':
+          return {
+            top: targetPosition.top - this.tooltip.outerHeight(),
+            left: targetPosition.left + width / 2
+          };
+        case 'bottom':
+          return {
+            top: targetPosition.top + this.el.outerHeight(),
+            left: targetPosition.left + width / 2
+          };
+        case 'left':
+          return {
+            top: targetPosition.top + height / 2,
+            left: targetPosition.left - this.tooltip.outerWidth()
+          };
+        case 'right':
+          return {
+            top: targetPosition.top + height / 2,
+            left: targetPosition.left + this.el.outerWidth()
+          };
+      }
+    }).call(this);
+    return this.tooltip.css(tooltipPosition);
   };
 
   QingTooltip.prototype.show = function() {

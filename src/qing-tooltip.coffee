@@ -26,14 +26,19 @@ class QingTooltip extends QingModule
       return @el.data 'qingTooltip'
 
     @opts = $.extend {}, QingTooltip.opts, @opts
+    if $.inArray(@opts.position, ['top','bottom','left','right']) < 0
+      @opts.position = 'bottom'
+
     @_render()
     @_bind()
+
     @el.data 'qingTooltip', @
     @trigger 'ready'
 
   _render: ->
     @tooltip = $ @opts.tpl
     @tooltip.html @opts.content
+    @tooltip.addClass @opts.position
 
   _bind: ->
     @el.on 'mouseenter', ()=>
@@ -42,41 +47,32 @@ class QingTooltip extends QingModule
       @hide()
   _setPosition: ->
     position = @el.position()
-    @_addClass()
-    @tooltip.css @_adjustPosition
-      top: (position.top || 0) + parseInt(@el.css('margin-top'))
-      left: (position.left || 0) + parseInt(@el.css('margin-left'))
-
-  _normalizePositioin: ->
-    if includes ['top','bottom','left','right'], @opts.position
-      @opts.position
-    else
-      'bottom'
-
-  _adjustPosition: (original)->
-    console.log original
     width = @el.outerWidth()
     height = @el.outerHeight()
 
-    switch @_normalizePositioin()
+    targetPosition =
+      top: (position.top || 0) + parseInt(@el.css('margin-top'))
+      left: (position.left || 0) + parseInt(@el.css('margin-left'))
+
+    tooltipPosition = switch @opts.position
       when 'top' then {
-        top: original.top - @tooltip.outerHeight()
-        left: original.left + width / 2
+        top: targetPosition.top - @tooltip.outerHeight()
+        left: targetPosition.left + width / 2
       }
       when 'bottom' then {
-        top: original.top + @el.outerHeight()
-        left: original.left + width / 2
+        top: targetPosition.top + @el.outerHeight()
+        left: targetPosition.left + width / 2
       }
       when 'left' then {
-        top: original.top + height / 2
-        left: original.left - @tooltip.outerWidth()
+        top: targetPosition.top + height / 2
+        left: targetPosition.left - @tooltip.outerWidth()
       }
       when 'right' then {
-        top: original.top + height / 2
-        left: original.left + @el.outerWidth()
+        top: targetPosition.top + height / 2
+        left: targetPosition.left + @el.outerWidth()
       }
-  _addClass: ->
-    @tooltip.addClass @_normalizePositioin()
+
+    @tooltip.css tooltipPosition
 
   show: ->
     @el.after @tooltip

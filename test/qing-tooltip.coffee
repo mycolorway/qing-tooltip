@@ -55,7 +55,6 @@ describe 'QingTooltip', ->
       qingTooltip = new QingTooltip
         el: '.test-el'
         position: 'left'
-      expect([].push).to.be.ok
       qingTooltip.show()
       expect($('.qing-tooltip.left')).to.have.lengthOf(1)
 
