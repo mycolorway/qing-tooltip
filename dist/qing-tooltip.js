@@ -17,21 +17,9 @@
 }(this, function ($,QingModule) {
 var define, module, exports;
 var b = require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"qing-tooltip":[function(require,module,exports){
-var QingTooltip, includes,
+var QingTooltip,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
-
-includes = function(array, item) {
-  var i, j, len, result;
-  result = false;
-  for (j = 0, len = array.length; j < len; j++) {
-    i = array[j];
-    if (i === item) {
-      result = true;
-    }
-  }
-  return result;
-};
 
 QingTooltip = (function(superClass) {
   extend(QingTooltip, superClass);
@@ -40,7 +28,10 @@ QingTooltip = (function(superClass) {
     el: null,
     content: '',
     position: 'bottom',
-    tpl: "<div class=\"qing-tooltip\">\n</div>"
+    tpl: "<div class=\"qing-tooltip\">\n</div>",
+    cls: '',
+    offset: 0,
+    trigger: 'hover'
   };
 
   QingTooltip.prototype.tooltip = null;
@@ -67,69 +58,101 @@ QingTooltip = (function(superClass) {
   QingTooltip.prototype._render = function() {
     this.tooltip = $(this.opts.tpl);
     this.tooltip.html(this.opts.content);
-    return this.tooltip.addClass(this.opts.position);
+    this.tooltip.addClass(this.opts.position);
+    return this.tooltip.addClass(this.opts.cls);
   };
 
   QingTooltip.prototype._bind = function() {
-    this.el.on('mouseenter', (function(_this) {
-      return function() {
-        return _this.show();
-      };
-    })(this));
-    return this.el.on('mouseleave', (function(_this) {
-      return function() {
-        return _this.hide();
-      };
-    })(this));
+    var handler;
+    switch (this.opts.trigger) {
+      case 'hover':
+        this.el.on('mouseenter.qingTooltip', (function(_this) {
+          return function() {
+            return _this.show();
+          };
+        })(this));
+        return this.el.on('mouseleave.qingTooltip', (function(_this) {
+          return function() {
+            return _this.hide();
+          };
+        })(this));
+      case 'click':
+        handler = (function(_this) {
+          return function() {
+            _this.show();
+            return setTimeout(function() {
+              return $(document).on('click.qingTooltip', function(e) {
+                if (($.contains(_this.tooltip, e.target)) || (_this.tooltip[0] === e.target)) {
+
+                } else {
+                  _this.hide();
+                  $(document).off('click.qingTooltip');
+                  return _this.el.one('click', handler);
+                }
+              });
+            });
+          };
+        })(this);
+        return this.el.one('click.qingTooltip', handler);
+    }
   };
 
-  QingTooltip.prototype._setPosition = function() {
-    var height, position, targetPosition, tooltipPosition, width;
+  QingTooltip.prototype._targetDimension = function() {
+    var position;
     position = this.el.position();
-    width = this.el.outerWidth();
-    height = this.el.outerHeight();
-    targetPosition = {
+    return {
+      width: this.el.outerWidth(),
+      height: this.el.outerHeight(),
       top: (position.top || 0) + parseInt(this.el.css('margin-top')),
       left: (position.left || 0) + parseInt(this.el.css('margin-left'))
     };
-    tooltipPosition = (function() {
-      switch (this.opts.position) {
-        case 'top':
-          return {
-            top: targetPosition.top - this.tooltip.outerHeight(),
-            left: targetPosition.left + width / 2
-          };
-        case 'bottom':
-          return {
-            top: targetPosition.top + this.el.outerHeight(),
-            left: targetPosition.left + width / 2
-          };
-        case 'left':
-          return {
-            top: targetPosition.top + height / 2,
-            left: targetPosition.left - this.tooltip.outerWidth()
-          };
-        case 'right':
-          return {
-            top: targetPosition.top + height / 2,
-            left: targetPosition.left + this.el.outerWidth()
-          };
-      }
-    }).call(this);
-    return this.tooltip.css(tooltipPosition);
+  };
+
+  QingTooltip.prototype._tooltipPosition = function(targetDimension) {
+    switch (this.opts.position) {
+      case 'top':
+        return {
+          top: targetDimension.top - this.tooltip.outerHeight() - this.opts.offset,
+          left: targetDimension.left + targetDimension.width / 2
+        };
+      case 'bottom':
+        return {
+          top: targetDimension.top + this.el.outerHeight() + this.opts.offset,
+          left: targetDimension.left + targetDimension.width / 2
+        };
+      case 'left':
+        return {
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left - this.tooltip.outerWidth() - this.opts.offset
+        };
+      case 'right':
+        return {
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left + this.el.outerWidth() + this.opts.offset
+        };
+    }
   };
 
   QingTooltip.prototype.show = function() {
-    this.el.after(this.tooltip);
-    return this._setPosition();
+    return this.tooltip.insertAfter(this.el).css(this._tooltipPosition(this._targetDimension()));
   };
 
   QingTooltip.prototype.hide = function() {
     return this.tooltip.detach();
   };
 
+  QingTooltip.prototype.toggle = function() {
+    if ($.contains(document, this.tooltip.get(0))) {
+      return this.hide();
+    } else {
+      return this.show();
+    }
+  };
+
   QingTooltip.prototype.destroy = function() {
     this.tooltip.remove();
+    this.el.off('.qingTooltip');
+    $(document).off('.qingTooltip');
     return this.el.removeData('qingTooltip');
   };
 

@@ -17,6 +17,9 @@ describe 'QingTooltip', ->
     beforeEach ->
       qingTooltip = new QingTooltip
         el: '.test-el'
+        position: 'left'
+        offset: 10,
+        trigger: 'hover'
 
     afterEach ->
       qingTooltip.destroy()
@@ -50,6 +53,7 @@ describe 'QingTooltip', ->
     afterEach ->
       qingTooltip.destroy() if qingTooltip
       qingTooltip = null
+
 
     it 'should show on left', ->
       qingTooltip = new QingTooltip
@@ -85,6 +89,7 @@ describe 'QingTooltip', ->
     it 'should show on default position', ->
       qingTooltip = new QingTooltip
         el: '.test-el'
+        position: 'wrong'
       expect([].push).to.be.ok
       qingTooltip.show()
       expect($('.qing-tooltip.bottom')).to.have.lengthOf(1)
@@ -97,4 +102,29 @@ describe 'QingTooltip', ->
       qingTooltip.hide()
       expect($('.qing-tooltip')).to.have.lengthOf(0)
 
+    it 'should support hover interaction', ()->
+      qingTooltip = new QingTooltip
+        el: '.test-el'
+        offset: 10,
+        trigger: 'hover'
+        cls: 'test'
+      $('.test-el').trigger('mouseenter')
+      expect($('.qing-tooltip')).to.have.lengthOf(1)
+      $('.test-el').trigger('mouseleave')
+      expect($('.qing-tooltip')).to.have.lengthOf(0)
+
+    it 'should support click interaction', (done)->
+      qingTooltip = new QingTooltip
+        el: '.test-el'
+        offset: 10,
+        trigger: 'click'
+        cls: 'test'
+      $('.test-el').trigger('click')
+      expect($('.qing-tooltip')).to.have.lengthOf(1)
+      setTimeout ->
+        $('.qing-tooltip').trigger('click')
+        expect($('.qing-tooltip')).to.have.lengthOf(1)
+        $('body').trigger('click')
+        expect($('.qing-tooltip')).to.have.lengthOf(0)
+        done()
 

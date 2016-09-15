@@ -1,9 +1,3 @@
-includes = (array, item)->
-  result = false
-  for i in array
-    result = true if i is item
-  result
-
 class QingTooltip extends QingModule
 
   @opts:
@@ -14,6 +8,9 @@ class QingTooltip extends QingModule
     <div class="qing-tooltip">
     </div>
     """
+    cls: ''
+    offset: 0
+    trigger: 'hover' # 'hover' 'click'
 
   tooltip: null
   constructor: (opts) ->
@@ -39,50 +36,69 @@ class QingTooltip extends QingModule
     @tooltip = $ @opts.tpl
     @tooltip.html @opts.content
     @tooltip.addClass @opts.position
+    @tooltip.addClass @opts.cls
 
   _bind: ->
-    @el.on 'mouseenter', ()=>
-      @show()
-    @el.on 'mouseleave', ()=>
-      @hide()
-  _setPosition: ->
+    switch @opts.trigger
+      when 'hover'
+        @el.on 'mouseenter.qingTooltip', ()=> @show()
+        @el.on 'mouseleave.qingTooltip', ()=> @hide()
+      when 'click'
+        handler = ()=>
+          @show()
+          setTimeout ()=>
+            $(document).on 'click.qingTooltip', (e)=>
+              if ($.contains @tooltip, e.target) or (@tooltip[0] is e.target)
+                return
+              else
+                @hide()
+                $(document).off 'click.qingTooltip'
+                @el.one 'click', handler
+        @el.one 'click.qingTooltip', handler
+  _targetDimension: ->
     position = @el.position()
-    width = @el.outerWidth()
-    height = @el.outerHeight()
 
-    targetPosition =
-      top: (position.top || 0) + parseInt(@el.css('margin-top'))
-      left: (position.left || 0) + parseInt(@el.css('margin-left'))
+    width : @el.outerWidth()
+    height : @el.outerHeight()
+    top: (position.top || 0) + parseInt(@el.css('margin-top'))
+    left: (position.left || 0) + parseInt(@el.css('margin-left'))
 
-    tooltipPosition = switch @opts.position
+  _tooltipPosition: (targetDimension) ->
+    switch @opts.position
       when 'top' then {
-        top: targetPosition.top - @tooltip.outerHeight()
-        left: targetPosition.left + width / 2
+        top: targetDimension.top - @tooltip.outerHeight() - @opts.offset
+        left: targetDimension.left + targetDimension.width / 2
       }
       when 'bottom' then {
-        top: targetPosition.top + @el.outerHeight()
-        left: targetPosition.left + width / 2
+        top: targetDimension.top + @el.outerHeight() + @opts.offset
+        left: targetDimension.left + targetDimension.width / 2
       }
       when 'left' then {
-        top: targetPosition.top + height / 2
-        left: targetPosition.left - @tooltip.outerWidth()
+        top: targetDimension.top + targetDimension.height / 2
+        left: targetDimension.left - @tooltip.outerWidth() - @opts.offset
       }
       when 'right' then {
-        top: targetPosition.top + height / 2
-        left: targetPosition.left + @el.outerWidth()
+        top: targetDimension.top + targetDimension.height / 2
+        left: targetDimension.left + @el.outerWidth() + @opts.offset
       }
 
-    @tooltip.css tooltipPosition
-
   show: ->
-    @el.after @tooltip
-    @_setPosition()
+    @tooltip.insertAfter @el
+      .css @_tooltipPosition @_targetDimension()
 
   hide: ->
     @tooltip.detach()
 
+  toggle: ->
+    if $.contains document, @tooltip.get(0)
+      @hide()
+    else
+      @show()
+
   destroy: ->
     @tooltip.remove()
+    @el.off('.qingTooltip')
+    $(document).off('.qingTooltip')
     @el.removeData 'qingTooltip'
 
 module.exports = QingTooltip
