@@ -57,34 +57,34 @@ class QingTooltip extends QingModule
   _targetDimension: ->
     position = @el.position()
 
-    width : @el.outerWidth()
-    height : @el.outerHeight()
-    top: (position.top || 0) + parseInt(@el.css('margin-top'))
-    left: (position.left || 0) + parseInt(@el.css('margin-left'))
+    width : @el.outerWidth(true)
+    height : @el.outerHeight(true)
 
   _tooltipPosition: (targetDimension) ->
     switch @opts.position
       when 'top' then {
-        top: targetDimension.top - @tooltip.outerHeight() - @opts.offset
-        left: targetDimension.left + targetDimension.width / 2
+        marginTop: - (@tooltip.outerHeight() + @opts.offset)
+        marginLeft: - targetDimension.width / 2
       }
       when 'bottom' then {
-        top: targetDimension.top + @el.outerHeight() + @opts.offset
-        left: targetDimension.left + targetDimension.width / 2
+        marginTop: targetDimension.height + @opts.offset
+        marginLeft: - targetDimension.width / 2
       }
       when 'left' then {
-        top: targetDimension.top + targetDimension.height / 2
-        left: targetDimension.left - @tooltip.outerWidth() - @opts.offset
+        marginTop: targetDimension.height / 2
+        marginLeft: -(targetDimension.width + @tooltip.outerWidth() +
+        @opts.offset)
       }
       when 'right' then {
-        top: targetDimension.top + targetDimension.height / 2
-        left: targetDimension.left + @el.outerWidth() + @opts.offset
+        marginTop: targetDimension.height / 2
+        marginLeft: @opts.offset
       }
 
   show: ->
     @shown = true
     @tooltip.insertAfter @el
-      .css @_tooltipPosition @_targetDimension()
+    @tooltip.css @_tooltipPosition @_targetDimension()
+
 
   hide: ->
     @shown = false

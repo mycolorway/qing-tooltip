@@ -17,7 +17,7 @@
           el: this,
           content: 'This is a tooltip',
           position: 'right',
-          offset: 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
         });
       })
 
@@ -26,7 +26,7 @@
           el: this,
           content: 'This is a tooltip',
           position: 'left',
-          offset: 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
         });
       })
 
@@ -35,8 +35,7 @@
           el: this,
           content: 'This is a tooltip',
           position: 'top',
-          trigger: 'click',
-          offset: 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
         });
       })
 
@@ -45,8 +44,7 @@
           el: this,
           content: 'This is a tooltip',
           position: 'bottom',
-          trigger: 'click',
-          offset: 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
         });
       })
 
@@ -58,15 +56,15 @@
   <style>
     body{
       text-align: center;
+      padding: 50px;
     }
     .test-el{
       display: inline-block;
-      margin: 5%;
+      margin: 0 20px;
     }
     .wrapper{
       position: relative;
-      left: 10px;
-      top: 10px;
+      top: 50px;
     }
   </style>
   <div class="test-el test-el-1">Hover on me, see right</div>

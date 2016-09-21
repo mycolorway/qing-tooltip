@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-09-21
+ * Date: 2016-09-22
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -99,10 +99,8 @@ QingTooltip = (function(superClass) {
     var position;
     position = this.el.position();
     return {
-      width: this.el.outerWidth(),
-      height: this.el.outerHeight(),
-      top: (position.top || 0) + parseInt(this.el.css('margin-top')),
-      left: (position.left || 0) + parseInt(this.el.css('margin-left'))
+      width: this.el.outerWidth(true),
+      height: this.el.outerHeight(true)
     };
   };
 
@@ -110,30 +108,31 @@ QingTooltip = (function(superClass) {
     switch (this.opts.position) {
       case 'top':
         return {
-          top: targetDimension.top - this.tooltip.outerHeight() - this.opts.offset,
-          left: targetDimension.left + targetDimension.width / 2
+          marginTop: -(this.tooltip.outerHeight() + this.opts.offset),
+          marginLeft: -targetDimension.width / 2
         };
       case 'bottom':
         return {
-          top: targetDimension.top + this.el.outerHeight() + this.opts.offset,
-          left: targetDimension.left + targetDimension.width / 2
+          marginTop: targetDimension.height + this.opts.offset,
+          marginLeft: -targetDimension.width / 2
         };
       case 'left':
         return {
-          top: targetDimension.top + targetDimension.height / 2,
-          left: targetDimension.left - this.tooltip.outerWidth() - this.opts.offset
+          marginTop: targetDimension.height / 2,
+          marginLeft: -(targetDimension.width + this.tooltip.outerWidth() + this.opts.offset)
         };
       case 'right':
         return {
-          top: targetDimension.top + targetDimension.height / 2,
-          left: targetDimension.left + this.el.outerWidth() + this.opts.offset
+          marginTop: targetDimension.height / 2,
+          marginLeft: this.opts.offset
         };
     }
   };
 
   QingTooltip.prototype.show = function() {
     this.shown = true;
-    return this.tooltip.insertAfter(this.el).css(this._tooltipPosition(this._targetDimension()));
+    this.tooltip.insertAfter(this.el);
+    return this.tooltip.css(this._tooltipPosition(this._targetDimension()));
   };
 
   QingTooltip.prototype.hide = function() {
