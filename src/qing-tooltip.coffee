@@ -44,17 +44,16 @@ class QingTooltip extends QingModule
         @el.on 'mouseenter.qingTooltip', ()=> @show()
         @el.on 'mouseleave.qingTooltip', ()=> @hide()
       when 'click'
-        handler = ()=>
-          @show()
-          setTimeout ()=>
-            $(document).on 'click.qingTooltip', (e)=>
-              if ($.contains @tooltip, e.target) or (@tooltip[0] is e.target)
-                return
-              else
-                @hide()
-                $(document).off 'click.qingTooltip'
-                @el.one 'click', handler
-        @el.one 'click.qingTooltip', handler
+        @el.on 'mousedown.qingTooltip', ()=>
+          if @shown
+            @hide
+          else
+            @show()
+            setTimeout ()=>
+              $(document).on 'mousedown.qingTooltip', (e)=>
+                if not ($.contains @tooltip, e.target) and
+                (@tooltip[0] isnt e.target)
+                  @hide()
   _targetDimension: ->
     position = @el.position()
 
@@ -83,19 +82,17 @@ class QingTooltip extends QingModule
       }
 
   show: ->
+    @shown = true
     @tooltip.insertAfter @el
       .css @_tooltipPosition @_targetDimension()
 
   hide: ->
+    @shown = false
     @tooltip.detach()
-
-  toggle: ->
-    if $.contains document, @tooltip.get(0)
-      @hide()
-    else
-      @show()
+    $(document).off 'mousedown.qingTooltip'
 
   destroy: ->
+    @hide()
     @tooltip.remove()
     @el.off('.qingTooltip')
     $(document).off('.qingTooltip')

@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-09-15
+ * Date: 2016-09-21
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -63,7 +63,6 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._bind = function() {
-    var handler;
     switch (this.opts.trigger) {
       case 'hover':
         this.el.on('mouseenter.qingTooltip', (function(_this) {
@@ -77,23 +76,22 @@ QingTooltip = (function(superClass) {
           };
         })(this));
       case 'click':
-        handler = (function(_this) {
+        return this.el.on('mousedown.qingTooltip', (function(_this) {
           return function() {
-            _this.show();
-            return setTimeout(function() {
-              return $(document).on('click.qingTooltip', function(e) {
-                if (($.contains(_this.tooltip, e.target)) || (_this.tooltip[0] === e.target)) {
-
-                } else {
-                  _this.hide();
-                  $(document).off('click.qingTooltip');
-                  return _this.el.one('click', handler);
-                }
+            if (_this.shown) {
+              return _this.hide;
+            } else {
+              _this.show();
+              return setTimeout(function() {
+                return $(document).on('mousedown.qingTooltip', function(e) {
+                  if (!($.contains(_this.tooltip, e.target)) && (_this.tooltip[0] !== e.target)) {
+                    return _this.hide();
+                  }
+                });
               });
-            });
+            }
           };
-        })(this);
-        return this.el.one('click.qingTooltip', handler);
+        })(this));
     }
   };
 
@@ -134,22 +132,18 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype.show = function() {
+    this.shown = true;
     return this.tooltip.insertAfter(this.el).css(this._tooltipPosition(this._targetDimension()));
   };
 
   QingTooltip.prototype.hide = function() {
-    return this.tooltip.detach();
-  };
-
-  QingTooltip.prototype.toggle = function() {
-    if ($.contains(document, this.tooltip.get(0))) {
-      return this.hide();
-    } else {
-      return this.show();
-    }
+    this.shown = false;
+    this.tooltip.detach();
+    return $(document).off('mousedown.qingTooltip');
   };
 
   QingTooltip.prototype.destroy = function() {
+    this.hide();
     this.tooltip.remove();
     this.el.off('.qingTooltip');
     $(document).off('.qingTooltip');

@@ -119,12 +119,12 @@ describe 'QingTooltip', ->
         offset: 10,
         trigger: 'click'
         cls: 'test'
-      $('.test-el').trigger('click')
+      $('.test-el').trigger('mousedown')
       expect($('.qing-tooltip')).to.have.lengthOf(1)
       setTimeout ->
-        $('.qing-tooltip').trigger('click')
+        $('.qing-tooltip').trigger('mousedown')
         expect($('.qing-tooltip')).to.have.lengthOf(1)
-        $('body').trigger('click')
+        $('body').trigger('mousedown')
         expect($('.qing-tooltip')).to.have.lengthOf(0)
         done()
 
