@@ -9,6 +9,7 @@ describe 'QingTooltip', ->
 
     before ->
       $el = $('<div class="test-el"></div>').appendTo 'body'
+      QingTooltip.opts.content = "hello"
 
     after ->
       $el.remove()

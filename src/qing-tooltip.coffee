@@ -2,7 +2,8 @@ class QingTooltip extends QingModule
 
   @opts:
     el: null
-    content: ''
+    pointTo: null
+    content: null
     position: 'bottom' # 'right' 'left' 'top' 'bottom'
     tpl: """
     <div class="qing-tooltip">
@@ -13,8 +14,13 @@ class QingTooltip extends QingModule
     trigger: 'hover' # 'hover' 'click'
 
   tooltip: null
-  constructor: (opts) ->
+
+  _setOptions: (opts) ->
     super
+    $.extend @opts, QingTooltip.opts, opts
+
+  _init: ->
+    return unless @opts.content
 
     @el = $ @opts.el
     unless @el.length > 0
@@ -22,9 +28,12 @@ class QingTooltip extends QingModule
     if @el.data 'qingTooltip'
       return @el.data 'qingTooltip'
 
-    @opts = $.extend {}, QingTooltip.opts, @opts
     if $.inArray(@opts.position, ['top','bottom','left','right']) < 0
       @opts.position = 'bottom'
+
+    @pointTo = @el.find(@opts.pointTo).first()
+    unless @pointTo.length
+      @pointTo = @el
 
     @_render()
     @_bind()
@@ -54,11 +63,10 @@ class QingTooltip extends QingModule
                 if not ($.contains @tooltip, e.target) and
                 (@tooltip[0] isnt e.target)
                   @hide()
-  _targetDimension: ->
-    position = @el.position()
 
-    width : @el.outerWidth(true)
-    height : @el.outerHeight(true)
+  _targetDimension: ->
+    width: @pointTo.outerWidth(true)
+    height: @pointTo.outerHeight(true)
 
   _tooltipPosition: (targetDimension) ->
     switch @opts.position
@@ -80,11 +88,11 @@ class QingTooltip extends QingModule
         marginLeft: @opts.offset
       }
 
+
   show: ->
     @shown = true
-    @tooltip.insertAfter @el
+    @tooltip.insertAfter @pointTo
     @tooltip.css @_tooltipPosition @_targetDimension()
-
 
   hide: ->
     @shown = false

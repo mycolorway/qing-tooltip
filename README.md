@@ -34,6 +34,15 @@ __el__
 
 Selector/Element/jQuery Object, required, specify the html element.
 
+Hover or click on this element will show a tooltip.
+
+__pointTo__
+
+Selector/Element/jQuery Object, optional, specify the html element.
+Must be a child of `el`.
+
+The tooltip will be shown on this element.
+
 ## Methods
 
 __destroy__ ()

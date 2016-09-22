@@ -24,9 +24,14 @@ var QingTooltip,
 QingTooltip = (function(superClass) {
   extend(QingTooltip, superClass);
 
+  function QingTooltip() {
+    return QingTooltip.__super__.constructor.apply(this, arguments);
+  }
+
   QingTooltip.opts = {
     el: null,
-    content: '',
+    pointTo: null,
+    content: null,
     position: 'bottom',
     tpl: "<div class=\"qing-tooltip\">\n</div>",
     cls: '',
@@ -36,8 +41,15 @@ QingTooltip = (function(superClass) {
 
   QingTooltip.prototype.tooltip = null;
 
-  function QingTooltip(opts) {
-    QingTooltip.__super__.constructor.apply(this, arguments);
+  QingTooltip.prototype._setOptions = function(opts) {
+    QingTooltip.__super__._setOptions.apply(this, arguments);
+    return $.extend(this.opts, QingTooltip.opts, opts);
+  };
+
+  QingTooltip.prototype._init = function() {
+    if (!this.opts.content) {
+      return;
+    }
     this.el = $(this.opts.el);
     if (!(this.el.length > 0)) {
       throw new Error('QingTooltip: option el is required');
@@ -45,15 +57,18 @@ QingTooltip = (function(superClass) {
     if (this.el.data('qingTooltip')) {
       return this.el.data('qingTooltip');
     }
-    this.opts = $.extend({}, QingTooltip.opts, this.opts);
     if ($.inArray(this.opts.position, ['top', 'bottom', 'left', 'right']) < 0) {
       this.opts.position = 'bottom';
+    }
+    this.pointTo = this.el.find(this.opts.pointTo).first();
+    if (!this.pointTo.length) {
+      this.pointTo = this.el;
     }
     this._render();
     this._bind();
     this.el.data('qingTooltip', this);
-    this.trigger('ready');
-  }
+    return this.trigger('ready');
+  };
 
   QingTooltip.prototype._render = function() {
     this.tooltip = $(this.opts.tpl);
@@ -96,11 +111,9 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._targetDimension = function() {
-    var position;
-    position = this.el.position();
     return {
-      width: this.el.outerWidth(true),
-      height: this.el.outerHeight(true)
+      width: this.pointTo.outerWidth(true),
+      height: this.pointTo.outerHeight(true)
     };
   };
 
@@ -131,7 +144,7 @@ QingTooltip = (function(superClass) {
 
   QingTooltip.prototype.show = function() {
     this.shown = true;
-    this.tooltip.insertAfter(this.el);
+    this.tooltip.insertAfter(this.pointTo);
     return this.tooltip.css(this._tooltipPosition(this._targetDimension()));
   };
 
