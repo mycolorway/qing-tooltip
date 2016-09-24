@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-09-22
+ * Date: 2016-09-24
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -60,7 +60,7 @@ QingTooltip = (function(superClass) {
     if ($.inArray(this.opts.position, ['top', 'bottom', 'left', 'right']) < 0) {
       this.opts.position = 'bottom';
     }
-    this.pointTo = this.el.find(this.opts.pointTo).first();
+    this.pointTo = this.el.find(this.opts.pointTo).filter(":visible").first();
     if (!this.pointTo.length) {
       this.pointTo = this.el;
     }

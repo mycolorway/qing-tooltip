@@ -31,7 +31,7 @@ class QingTooltip extends QingModule
     if $.inArray(@opts.position, ['top','bottom','left','right']) < 0
       @opts.position = 'bottom'
 
-    @pointTo = @el.find(@opts.pointTo).first()
+    @pointTo = @el.find(@opts.pointTo).filter(":visible").first()
     unless @pointTo.length
       @pointTo = @el
 
