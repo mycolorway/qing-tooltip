@@ -12,6 +12,7 @@
   position: absolute;
   background: $background-color;
   border-radius: 4px;
+  white-space: nowrap;
   &::before, &::after {
     content: '';
     display: block;
