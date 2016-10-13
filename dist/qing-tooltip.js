@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-09-24
+ * Date: 2016-10-13
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -111,33 +111,47 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._targetDimension = function() {
-    return {
+    var position, r;
+    position = this.pointTo.position();
+    r = {
       width: this.pointTo.outerWidth(true),
-      height: this.pointTo.outerHeight(true)
+      height: this.pointTo.outerHeight(true),
+      innerWidth: this.pointTo.outerWidth(false),
+      innerHeight: this.pointTo.outerHeight(false),
+      top: position.top,
+      left: position.left,
+      margin: {
+        left: parseInt(this.pointTo.css('marginLeft')) || 0,
+        right: parseInt(this.pointTo.css('marginRight')) || 0,
+        top: parseInt(this.pointTo.css('marginTop')) || 0,
+        bottom: parseInt(this.pointTo.css('marginBottom')) || 0
+      }
     };
+    console.log(r);
+    return r;
   };
 
   QingTooltip.prototype._tooltipPosition = function(targetDimension) {
     switch (this.opts.position) {
       case 'top':
         return {
-          marginTop: -(this.tooltip.outerHeight() + this.opts.offset),
-          marginLeft: -targetDimension.width / 2
+          top: targetDimension.top - (this.tooltip.outerHeight() + this.opts.offset),
+          left: targetDimension.left + targetDimension.width - targetDimension.width / 2
         };
       case 'bottom':
         return {
-          marginTop: targetDimension.height + this.opts.offset,
-          marginLeft: -targetDimension.width / 2
+          top: targetDimension.top + targetDimension.margin.top + targetDimension.innerHeight + this.opts.offset,
+          left: targetDimension.left + targetDimension.width / 2
         };
       case 'left':
         return {
-          marginTop: targetDimension.height / 2,
-          marginLeft: -(targetDimension.width + this.tooltip.outerWidth() + this.opts.offset)
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left + targetDimension.margin.left - (this.tooltip.outerWidth() + this.opts.offset)
         };
       case 'right':
         return {
-          marginTop: targetDimension.height / 2,
-          marginLeft: this.opts.offset
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left + targetDimension.margin.left + targetDimension.innerWidth + this.opts.offset
         };
     }
   };

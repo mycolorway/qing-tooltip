@@ -65,27 +65,46 @@ class QingTooltip extends QingModule
                   @hide()
 
   _targetDimension: ->
+    position = @pointTo.position()
+
+    r =
     width: @pointTo.outerWidth(true)
     height: @pointTo.outerHeight(true)
+    innerWidth: @pointTo.outerWidth(false)
+    innerHeight: @pointTo.outerHeight(false)
+    top: position.top
+    left: position.left
+    margin: {
+      left: parseInt(@pointTo.css('marginLeft')) || 0
+      right: parseInt(@pointTo.css('marginRight')) || 0
+      top: parseInt(@pointTo.css('marginTop')) || 0
+      bottom: parseInt(@pointTo.css('marginBottom')) || 0
+    }
+
+    console.log r
+    r
 
   _tooltipPosition: (targetDimension) ->
     switch @opts.position
       when 'top' then {
-        marginTop: - (@tooltip.outerHeight() + @opts.offset)
-        marginLeft: - targetDimension.width / 2
+        top: targetDimension.top - (@tooltip.outerHeight() + @opts.offset)
+        left: targetDimension.left + targetDimension.width -
+        targetDimension.width / 2
       }
       when 'bottom' then {
-        marginTop: targetDimension.height + @opts.offset
-        marginLeft: - targetDimension.width / 2
+        top: targetDimension.top + targetDimension.margin.top +
+        targetDimension.innerHeight + @opts.offset
+        left: targetDimension.left + targetDimension.width / 2
       }
       when 'left' then {
-        marginTop: targetDimension.height / 2
-        marginLeft: -(targetDimension.width + @tooltip.outerWidth() +
-        @opts.offset)
+        top: targetDimension.top + targetDimension.height / 2
+        left: targetDimension.left + targetDimension.margin.left -
+        (@tooltip.outerWidth() + @opts.offset)
       }
       when 'right' then {
-        marginTop: targetDimension.height / 2
-        marginLeft: @opts.offset
+        top: targetDimension.top + targetDimension.height / 2
+        left: targetDimension.left + targetDimension.margin.left +
+        targetDimension.innerWidth + @opts.offset
       }
 
 
