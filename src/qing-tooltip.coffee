@@ -12,6 +12,7 @@ class QingTooltip extends QingModule
     cls: ''
     offset: 0
     trigger: 'hover' # 'hover' 'click'
+    appendTo: null
 
   tooltip: null
 
@@ -34,6 +35,12 @@ class QingTooltip extends QingModule
     @pointTo = @el.find(@opts.pointTo).filter(":visible").first()
     unless @pointTo.length
       @pointTo = @el
+
+    if @opts.appendTo
+      @appendTo = $ @opts.appendTo
+      if (@appendTo[0].tagName isnt 'body') and
+      (@appendTo.css('position') is 'static')
+        throw new Error 'appendTo a non-positioned element'
 
     @_render()
     @_bind()
@@ -65,24 +72,32 @@ class QingTooltip extends QingModule
                   @hide()
 
   _targetDimension: ->
-    position = @pointTo.position()
+    dimension =
+      width: @pointTo.outerWidth(true)
+      height: @pointTo.outerHeight(true)
+      innerWidth: @pointTo.outerWidth(false)
+      innerHeight: @pointTo.outerHeight(false)
+      margin: {
+        left: parseInt(@pointTo.css('marginLeft')) || 0
+        right: parseInt(@pointTo.css('marginRight')) || 0
+        top: parseInt(@pointTo.css('marginTop')) || 0
+        bottom: parseInt(@pointTo.css('marginBottom')) || 0
+      }
+    if @appendTo
+      containerOffset = @appendTo.offset()
+      targetOffset = @pointTo.offset()
 
-    r =
-    width: @pointTo.outerWidth(true)
-    height: @pointTo.outerHeight(true)
-    innerWidth: @pointTo.outerWidth(false)
-    innerHeight: @pointTo.outerHeight(false)
-    top: position.top
-    left: position.left
-    margin: {
-      left: parseInt(@pointTo.css('marginLeft')) || 0
-      right: parseInt(@pointTo.css('marginRight')) || 0
-      top: parseInt(@pointTo.css('marginTop')) || 0
-      bottom: parseInt(@pointTo.css('marginBottom')) || 0
-    }
+      $.extend dimension, {
+        top: targetOffset.top - containerOffset.top - dimension.margin.top
+        left:  targetOffset.left - containerOffset.left - dimension.margin.left
+      }
+    else
+      position = @pointTo.position()
 
-    console.log r
-    r
+      $.extend dimension, {
+        top: position.top
+        left: position.left
+      }
 
   _tooltipPosition: (targetDimension) ->
     switch @opts.position
@@ -110,7 +125,10 @@ class QingTooltip extends QingModule
 
   show: ->
     @shown = true
-    @tooltip.insertAfter @pointTo
+    if @appendTo
+      @appendTo.append(@tooltip)
+    else
+      @tooltip.insertAfter @pointTo
     @tooltip.css @_tooltipPosition @_targetDimension()
 
   hide: ->

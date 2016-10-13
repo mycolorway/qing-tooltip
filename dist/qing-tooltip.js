@@ -36,7 +36,8 @@ QingTooltip = (function(superClass) {
     tpl: "<div class=\"qing-tooltip\">\n</div>",
     cls: '',
     offset: 0,
-    trigger: 'hover'
+    trigger: 'hover',
+    appendTo: null
   };
 
   QingTooltip.prototype.tooltip = null;
@@ -63,6 +64,12 @@ QingTooltip = (function(superClass) {
     this.pointTo = this.el.find(this.opts.pointTo).filter(":visible").first();
     if (!this.pointTo.length) {
       this.pointTo = this.el;
+    }
+    if (this.opts.appendTo) {
+      this.appendTo = $(this.opts.appendTo);
+      if ((this.appendTo[0].tagName !== 'body') && (this.appendTo.css('position') === 'static')) {
+        throw new Error('appendTo a non-positioned element');
+      }
     }
     this._render();
     this._bind();
@@ -111,15 +118,12 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._targetDimension = function() {
-    var position, r;
-    position = this.pointTo.position();
-    r = {
+    var containerOffset, dimension, position, targetOffset;
+    dimension = {
       width: this.pointTo.outerWidth(true),
       height: this.pointTo.outerHeight(true),
       innerWidth: this.pointTo.outerWidth(false),
       innerHeight: this.pointTo.outerHeight(false),
-      top: position.top,
-      left: position.left,
       margin: {
         left: parseInt(this.pointTo.css('marginLeft')) || 0,
         right: parseInt(this.pointTo.css('marginRight')) || 0,
@@ -127,8 +131,20 @@ QingTooltip = (function(superClass) {
         bottom: parseInt(this.pointTo.css('marginBottom')) || 0
       }
     };
-    console.log(r);
-    return r;
+    if (this.appendTo) {
+      containerOffset = this.appendTo.offset();
+      targetOffset = this.pointTo.offset();
+      return $.extend(dimension, {
+        top: targetOffset.top - containerOffset.top - dimension.margin.top,
+        left: targetOffset.left - containerOffset.left - dimension.margin.left
+      });
+    } else {
+      position = this.pointTo.position();
+      return $.extend(dimension, {
+        top: position.top,
+        left: position.left
+      });
+    }
   };
 
   QingTooltip.prototype._tooltipPosition = function(targetDimension) {
@@ -158,7 +174,11 @@ QingTooltip = (function(superClass) {
 
   QingTooltip.prototype.show = function() {
     this.shown = true;
-    this.tooltip.insertAfter(this.pointTo);
+    if (this.appendTo) {
+      this.appendTo.append(this.tooltip);
+    } else {
+      this.tooltip.insertAfter(this.pointTo);
+    }
     return this.tooltip.css(this._tooltipPosition(this._targetDimension()));
   };
 
