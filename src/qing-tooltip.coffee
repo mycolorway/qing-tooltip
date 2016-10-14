@@ -12,7 +12,7 @@ class QingTooltip extends QingModule
     cls: ''
     offset: 0
     trigger: 'hover' # 'hover' 'click'
-    appendTo: null
+    appendTo: 'body'
 
   tooltip: null
 
@@ -38,9 +38,6 @@ class QingTooltip extends QingModule
 
     if @opts.appendTo
       @appendTo = $ @opts.appendTo
-      if (@appendTo[0].tagName isnt 'body') and
-      (@appendTo.css('position') is 'static')
-        throw new Error 'appendTo a non-positioned element'
 
     @_render()
     @_bind()
@@ -84,7 +81,7 @@ class QingTooltip extends QingModule
         bottom: parseInt(@pointTo.css('marginBottom')) || 0
       }
     if @appendTo
-      containerOffset = @appendTo.offset()
+      containerOffset = @tooltip.offsetParent().offset()
       targetOffset = @pointTo.offset()
 
       $.extend dimension, {

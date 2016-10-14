@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-10-13
+ * Date: 2016-10-14
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -37,7 +37,7 @@ QingTooltip = (function(superClass) {
     cls: '',
     offset: 0,
     trigger: 'hover',
-    appendTo: null
+    appendTo: 'body'
   };
 
   QingTooltip.prototype.tooltip = null;
@@ -67,9 +67,6 @@ QingTooltip = (function(superClass) {
     }
     if (this.opts.appendTo) {
       this.appendTo = $(this.opts.appendTo);
-      if ((this.appendTo[0].tagName !== 'body') && (this.appendTo.css('position') === 'static')) {
-        throw new Error('appendTo a non-positioned element');
-      }
     }
     this._render();
     this._bind();
@@ -132,7 +129,7 @@ QingTooltip = (function(superClass) {
       }
     };
     if (this.appendTo) {
-      containerOffset = this.appendTo.offset();
+      containerOffset = this.tooltip.offsetParent().offset();
       targetOffset = this.pointTo.offset();
       return $.extend(dimension, {
         top: targetOffset.top - containerOffset.top - dimension.margin.top,
