@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-09-24
+ * Date: 2016-10-14
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -36,7 +36,8 @@ QingTooltip = (function(superClass) {
     tpl: "<div class=\"qing-tooltip\">\n</div>",
     cls: '',
     offset: 0,
-    trigger: 'hover'
+    trigger: 'hover',
+    appendTo: 'body'
   };
 
   QingTooltip.prototype.tooltip = null;
@@ -63,6 +64,9 @@ QingTooltip = (function(superClass) {
     this.pointTo = this.el.find(this.opts.pointTo).filter(":visible").first();
     if (!this.pointTo.length) {
       this.pointTo = this.el;
+    }
+    if (this.opts.appendTo) {
+      this.appendTo = $(this.opts.appendTo);
     }
     this._render();
     this._bind();
@@ -111,40 +115,67 @@ QingTooltip = (function(superClass) {
   };
 
   QingTooltip.prototype._targetDimension = function() {
-    return {
+    var containerOffset, dimension, position, targetOffset;
+    dimension = {
       width: this.pointTo.outerWidth(true),
-      height: this.pointTo.outerHeight(true)
+      height: this.pointTo.outerHeight(true),
+      innerWidth: this.pointTo.outerWidth(false),
+      innerHeight: this.pointTo.outerHeight(false),
+      margin: {
+        left: parseInt(this.pointTo.css('marginLeft')) || 0,
+        right: parseInt(this.pointTo.css('marginRight')) || 0,
+        top: parseInt(this.pointTo.css('marginTop')) || 0,
+        bottom: parseInt(this.pointTo.css('marginBottom')) || 0
+      }
     };
+    if (this.appendTo) {
+      containerOffset = this.tooltip.offsetParent().offset();
+      targetOffset = this.pointTo.offset();
+      return $.extend(dimension, {
+        top: targetOffset.top - containerOffset.top - dimension.margin.top,
+        left: targetOffset.left - containerOffset.left - dimension.margin.left
+      });
+    } else {
+      position = this.pointTo.position();
+      return $.extend(dimension, {
+        top: position.top,
+        left: position.left
+      });
+    }
   };
 
   QingTooltip.prototype._tooltipPosition = function(targetDimension) {
     switch (this.opts.position) {
       case 'top':
         return {
-          marginTop: -(this.tooltip.outerHeight() + this.opts.offset),
-          marginLeft: -targetDimension.width / 2
+          top: targetDimension.top - (this.tooltip.outerHeight() + this.opts.offset),
+          left: targetDimension.left + targetDimension.width - targetDimension.width / 2
         };
       case 'bottom':
         return {
-          marginTop: targetDimension.height + this.opts.offset,
-          marginLeft: -targetDimension.width / 2
+          top: targetDimension.top + targetDimension.margin.top + targetDimension.innerHeight + this.opts.offset,
+          left: targetDimension.left + targetDimension.width / 2
         };
       case 'left':
         return {
-          marginTop: targetDimension.height / 2,
-          marginLeft: -(targetDimension.width + this.tooltip.outerWidth() + this.opts.offset)
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left + targetDimension.margin.left - (this.tooltip.outerWidth() + this.opts.offset)
         };
       case 'right':
         return {
-          marginTop: targetDimension.height / 2,
-          marginLeft: this.opts.offset
+          top: targetDimension.top + targetDimension.height / 2,
+          left: targetDimension.left + targetDimension.margin.left + targetDimension.innerWidth + this.opts.offset
         };
     }
   };
 
   QingTooltip.prototype.show = function() {
     this.shown = true;
-    this.tooltip.insertAfter(this.pointTo);
+    if (this.appendTo) {
+      this.appendTo.append(this.tooltip);
+    } else {
+      this.tooltip.insertAfter(this.pointTo);
+    }
     return this.tooltip.css(this._tooltipPosition(this._targetDimension()));
   };
 

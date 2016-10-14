@@ -17,7 +17,8 @@
           el: this,
           content: 'This is a tooltip',
           position: 'right',
-          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10,
+          appendTo:$(this).closest('.wrapper').length > 0 ? $(this).closest('.wrapper') : null
         });
       })
 
@@ -26,7 +27,8 @@
           el: this,
           content: 'This is a tooltip',
           position: 'left',
-          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10,
+          appendTo:$(this).closest('.wrapper').length > 0 ? $(this).closest('.wrapper') : null
         });
       })
 
@@ -35,7 +37,8 @@
           el: this,
           content: 'This is a tooltip',
           position: 'top',
-          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10,
+          appendTo:$(this).closest('.wrapper').length > 0 ? $(this).closest('.wrapper') : null
         });
       })
 
@@ -44,7 +47,8 @@
           el: this,
           content: 'This is a tooltip',
           position: 'bottom',
-          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10
+          offset: $(this).closest('.wrapper').length > 0 ? 0 : 10,
+          appendTo:$(this).closest('.wrapper').length > 0 ? $(this).closest('.wrapper') : null
         });
       })
 
@@ -63,7 +67,6 @@
       margin: 0 20px;
     }
     .wrapper{
-      position: relative;
       top: 50px;
     }
   </style>
@@ -73,10 +76,36 @@
   <div class="test-el test-el-4">Hover on me, see bottom</div>
 
   <div class="wrapper">
-    <div class="test-el test-el-1">Hover on me, see right</div>
-    <div class="test-el test-el-2">Hover on me, see left</div>
-    <div class="test-el test-el-3">Hover on me, see top</div>
-    <div class="test-el test-el-4">Hover on me, see bottom</div>
+    <div style="overflow:hidden; border: 1px solid;">
+      <p>overflow hidden
+      <div class="test-el test-el-1">Hover on me, see right</div>
+      <div class="test-el test-el-2">Hover on me, see left</div>
+      <div class="test-el test-el-3">Hover on me, see top</div>
+      <div class="test-el test-el-4">Hover on me, see bottom</div>
+    </div>
   </div>
+
+  <div class="wrapper" style="width: 6em; margin-top: 100px;">
+    <span id="full" style="display:inline-block; width: 100%;">一行文字</span>
+  </div>
+  <script>
+new QingTooltip({
+  el: $('#full'),
+  content: '你好你好你好',
+  position: 'right'
+})
+  </script>
+
+  <div class="wrapper" style="width: 6em; margin-top: 100px;">
+    <span id="full2" style="display:inline-block; width: 100%;">一行文字</span>
+  </div>
+  <script>
+new QingTooltip({
+  el: $('#full2'),
+  content: '你好你好你好',
+  position: 'right',
+  offset: 20
+})
+  </script>
 </body>
 </html>
