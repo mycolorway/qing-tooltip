@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-10-14
+ * Date: 2016-10-18
  */
 .qing-tooltip {
   color: white;
@@ -19,6 +19,12 @@
   background: #4A4A4A;
   border-radius: 4px;
   white-space: nowrap; }
+  .qing-tooltip.before-active {
+    opacity: 0; }
+  .qing-tooltip.active {
+    opacity: 1;
+    -webkit-transition: opacity 0.4s;
+    transition: opacity 0.4s; }
   .qing-tooltip::before, .qing-tooltip::after {
     content: '';
     display: block;

@@ -127,6 +127,9 @@ class QingTooltip extends QingModule
     else
       @tooltip.insertAfter @pointTo
     @tooltip.css @_tooltipPosition @_targetDimension()
+    @tooltip.removeClass('active').addClass('before-active')
+    @tooltip.offset()
+    @tooltip.addClass('active').removeClass('before-active')
 
   hide: ->
     @shown = false
