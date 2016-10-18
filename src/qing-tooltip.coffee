@@ -127,9 +127,12 @@ class QingTooltip extends QingModule
     else
       @tooltip.insertAfter @pointTo
     @tooltip.css @_tooltipPosition @_targetDimension()
+    @tooltip[0].offsetHeight # reflow
+    @tooltip.addClass('active')
 
   hide: ->
     @shown = false
+    @tooltip.removeClass('active')
     @tooltip.detach()
     $(document).off 'mousedown.qingTooltip'
 

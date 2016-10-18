@@ -13,6 +13,12 @@
   background: $background-color;
   border-radius: 4px;
   white-space: nowrap;
+  opacity: 0;
+  &.active{
+    opacity: 1;
+    -webkit-transition: opacity 0.4s;
+    transition: opacity 0.4s;
+  }
   &::before, &::after {
     content: '';
     display: block;
