@@ -177,6 +177,7 @@ QingTooltip = (function(superClass) {
       this.tooltip.insertAfter(this.pointTo);
     }
     this.tooltip.css(this._tooltipPosition(this._targetDimension()));
+    this.tooltip[0].offsetHeight;
     return this.tooltip.addClass('active');
   };
 
