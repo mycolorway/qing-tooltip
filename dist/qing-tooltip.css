@@ -18,9 +18,8 @@
   position: absolute;
   background: #4A4A4A;
   border-radius: 4px;
-  white-space: nowrap; }
-  .qing-tooltip.before-active {
-    opacity: 0; }
+  white-space: nowrap;
+  opacity: 0; }
   .qing-tooltip.active {
     opacity: 1;
     -webkit-transition: opacity 0.4s;

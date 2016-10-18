@@ -177,13 +177,12 @@ QingTooltip = (function(superClass) {
       this.tooltip.insertAfter(this.pointTo);
     }
     this.tooltip.css(this._tooltipPosition(this._targetDimension()));
-    this.tooltip.removeClass('active').addClass('before-active');
-    this.tooltip.offset();
-    return this.tooltip.addClass('active').removeClass('before-active');
+    return this.tooltip.addClass('active');
   };
 
   QingTooltip.prototype.hide = function() {
     this.shown = false;
+    this.tooltip.removeClass('active');
     this.tooltip.detach();
     return $(document).off('mousedown.qingTooltip');
   };
