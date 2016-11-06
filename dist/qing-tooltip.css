@@ -6,13 +6,12 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-10-18
+ * Date: 2016-11-6
  */
 .qing-tooltip {
   color: white;
   box-sizing: border-box;
   display: inline-block;
-  border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
   position: absolute;
