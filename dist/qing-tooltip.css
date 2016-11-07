@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-11-6
+ * Date: 2016-11-7
  */
 .qing-tooltip {
   color: white;
@@ -23,7 +23,7 @@
     opacity: 1;
     -webkit-transition: opacity 0.4s;
     transition: opacity 0.4s; }
-  .qing-tooltip::before, .qing-tooltip::after {
+  .qing-tooltip::after {
     content: '';
     display: block;
     position: absolute;
@@ -33,12 +33,6 @@
     pointer-events: none; }
   .qing-tooltip.top {
     transform: translate(-50%, -8px); }
-    .qing-tooltip.top::before {
-      border-width: 8px;
-      left: 50%;
-      top: 100%;
-      transform: translate(-50%, 0%);
-      border-top-color: #ccc; }
     .qing-tooltip.top::after {
       left: 50%;
       top: 100%;
@@ -46,12 +40,6 @@
       border-top-color: #4A4A4A; }
   .qing-tooltip.bottom {
     transform: translate(-50%, 8px); }
-    .qing-tooltip.bottom::before {
-      border-width: 8px;
-      left: 50%;
-      bottom: 100%;
-      transform: translate(-50%, 0%);
-      border-bottom-color: #ccc; }
     .qing-tooltip.bottom::after {
       left: 50%;
       bottom: 100%;
@@ -59,12 +47,6 @@
       border-bottom-color: #4A4A4A; }
   .qing-tooltip.left {
     transform: translate(-8px, -50%); }
-    .qing-tooltip.left::before {
-      border-width: 8px;
-      left: 100%;
-      top: 50%;
-      transform: translate(0%, -50%);
-      border-left-color: #ccc; }
     .qing-tooltip.left::after {
       left: 100%;
       top: 50%;
@@ -72,12 +54,6 @@
       border-left-color: #4A4A4A; }
   .qing-tooltip.right {
     transform: translate(8px, -50%); }
-    .qing-tooltip.right::before {
-      border-width: 8px;
-      right: 100%;
-      top: 50%;
-      transform: translate(0%, -50%);
-      border-right-color: #ccc; }
     .qing-tooltip.right::after {
       right: 100%;
       top: 50%;

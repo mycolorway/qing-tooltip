@@ -1,5 +1,4 @@
 .qing-tooltip {
-  $border-color: #ccc;
   $arrow-width: 8px;
   $inner-arrow-width: $arrow-width - 1px;
   $background-color: #4A4A4A;
@@ -18,7 +17,7 @@
     -webkit-transition: opacity 0.4s;
     transition: opacity 0.4s;
   }
-  &::before, &::after {
+  &::after {
     content: '';
     display: block;
     position: absolute;
@@ -29,13 +28,6 @@
   }
   &.top {
     transform: translate(-50%, -$arrow-width);
-    &::before {
-      border-width: $arrow-width;
-      left: 50%;
-      top: 100%;
-      transform: translate(-50%, 0%);
-      border-top-color: $border-color;
-    }
     &::after {
       left: 50%;
       top: 100%;
@@ -45,13 +37,6 @@
   }
   &.bottom {
     transform: translate(-50%, $arrow-width);
-    &::before {
-      border-width: $arrow-width;
-      left: 50%;
-      bottom: 100%;
-      transform: translate(-50%, 0%);
-      border-bottom-color: $border-color;
-    }
     &::after {
       left: 50%;
       bottom: 100%;
@@ -62,13 +47,6 @@
 
   &.left {
     transform: translate(-$arrow-width, -50%);
-    &::before {
-      border-width: $arrow-width;
-      left: 100%;
-      top: 50%;
-      transform: translate(0%, -50%);
-      border-left-color: $border-color;
-    }
     &::after {
       left: 100%;
       top: 50%;
@@ -78,13 +56,6 @@
   }
   &.right {
     transform: translate($arrow-width, -50%);
-    &::before {
-      border-width: $arrow-width;
-      right: 100%;
-      top: 50%;
-      transform: translate(0%, -50%);
-      border-right-color: $border-color;
-    }
     &::after {
       right: 100%;
       top: 50%;
