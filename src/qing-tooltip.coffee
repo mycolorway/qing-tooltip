@@ -99,22 +99,26 @@ class QingTooltip extends QingModule
   _tooltipPosition: (targetDimension) ->
     switch @opts.position
       when 'top' then {
-        top: targetDimension.top - (@tooltip.outerHeight() + @opts.offset)
-        left: targetDimension.left + targetDimension.width -
-        targetDimension.width / 2
+        top: targetDimension.top + targetDimension.margin.top -
+          (@tooltip.outerHeight() + @opts.offset)
+        left: targetDimension.left + targetDimension.margin.left +
+          targetDimension.innerWidth / 2
       }
       when 'bottom' then {
         top: targetDimension.top + targetDimension.margin.top +
         targetDimension.innerHeight + @opts.offset
-        left: targetDimension.left + targetDimension.width / 2
+        left: targetDimension.left + targetDimension.margin.left +
+          targetDimension.innerWidth / 2
       }
       when 'left' then {
-        top: targetDimension.top + targetDimension.height / 2
+        top: targetDimension.top + targetDimension.margin.top +
+          targetDimension.innerHeight / 2
         left: targetDimension.left + targetDimension.margin.left -
         (@tooltip.outerWidth() + @opts.offset)
       }
       when 'right' then {
-        top: targetDimension.top + targetDimension.height / 2
+        top: targetDimension.top + targetDimension.margin.top +
+          targetDimension.innerHeight / 2
         left: targetDimension.left + targetDimension.margin.left +
         targetDimension.innerWidth + @opts.offset
       }

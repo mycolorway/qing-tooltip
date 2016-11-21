@@ -6,7 +6,7 @@
  * Released under the MIT license
  * http://mycolorway.github.io/qing-tooltip/license.html
  *
- * Date: 2016-11-7
+ * Date: 2016-11-21
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
@@ -148,22 +148,22 @@ QingTooltip = (function(superClass) {
     switch (this.opts.position) {
       case 'top':
         return {
-          top: targetDimension.top - (this.tooltip.outerHeight() + this.opts.offset),
-          left: targetDimension.left + targetDimension.width - targetDimension.width / 2
+          top: targetDimension.top + targetDimension.margin.top - (this.tooltip.outerHeight() + this.opts.offset),
+          left: targetDimension.left + targetDimension.margin.left + targetDimension.innerWidth / 2
         };
       case 'bottom':
         return {
           top: targetDimension.top + targetDimension.margin.top + targetDimension.innerHeight + this.opts.offset,
-          left: targetDimension.left + targetDimension.width / 2
+          left: targetDimension.left + targetDimension.margin.left + targetDimension.innerWidth / 2
         };
       case 'left':
         return {
-          top: targetDimension.top + targetDimension.height / 2,
+          top: targetDimension.top + targetDimension.margin.top + targetDimension.innerHeight / 2,
           left: targetDimension.left + targetDimension.margin.left - (this.tooltip.outerWidth() + this.opts.offset)
         };
       case 'right':
         return {
-          top: targetDimension.top + targetDimension.height / 2,
+          top: targetDimension.top + targetDimension.margin.top + targetDimension.innerHeight / 2,
           left: targetDimension.left + targetDimension.margin.left + targetDimension.innerWidth + this.opts.offset
         };
     }
