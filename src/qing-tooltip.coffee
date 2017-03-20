@@ -141,6 +141,7 @@ class QingTooltip extends QingModule
     $(document).off 'mousedown.qingTooltip'
 
   destroy: ->
+    return unless @el and @el.length > 0
     @hide()
     @tooltip.remove()
     @el.off('.qingTooltip')
